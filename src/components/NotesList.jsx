@@ -21,14 +21,30 @@ export default function NotesList({ notes = [], loading, onUpdate, onDelete }) {
   if (loading) return <p>Carregando notas...</p>
   if (!notes.length) return <p>Nenhuma nota encontrada.</p>
 
+  // Sort by most recent first (assuming notes have a createdAt field)
+  const sortedNotes = [...notes].sort((a, b) => {
+    const dateA = new Date(a.createdAt || 0)
+    const dateB = new Date(b.createdAt || 0)
+    return dateB - dateA
+  })
+
   return (
     <div className="notes">
-      {notes.map(note => (
+      {sortedNotes.map(note => (
         <div key={note.id} className="note">
           {editingId === note.id ? (
             <div>
-              <input value={title} onChange={e => setTitle(e.target.value)} />
-              <textarea value={content} onChange={e => setContent(e.target.value)} />
+              <input 
+                value={title} 
+                onChange={e => setTitle(e.target.value)} 
+                maxLength={1000}
+                required
+              />
+              <textarea 
+                value={content} 
+                onChange={e => setContent(e.target.value)}
+                maxLength={1000}
+              />
               <div>
                 <button onClick={save}>Salvar</button>
                 <button onClick={() => setEditingId(null)}>Cancelar</button>

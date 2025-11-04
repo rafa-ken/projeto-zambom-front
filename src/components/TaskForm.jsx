@@ -7,18 +7,36 @@ export default function TaskForm({ onCreate }) {
 
   async function submit(e) {
     e.preventDefault()
-    if (!titulo || !descricao) { alert('Preencha título e descrição'); return }
+    if (!descricao) { 
+      alert('Preencha a descrição')
+      return 
+    }
     setLoading(true)
     try {
       await onCreate({ titulo, descricao })
-      setTitulo(''); setDescricao('')
-    } finally { setLoading(false) }
+      setTitulo('')
+      setDescricao('')
+      alert('🔥 Anotado!')
+    } finally { 
+      setLoading(false) 
+    }
   }
 
   return (
-    <form className="note-form" onSubmit={submit}>
-      <input placeholder="Título da tarefa" value={titulo} onChange={e => setTitulo(e.target.value)} />
-      <textarea placeholder="Descrição" value={descricao} onChange={e => setDescricao(e.target.value)} />
+    <form className="form tasks" onSubmit={submit}>
+      <input 
+        placeholder="Título da tarefa (opcional)" 
+        value={titulo} 
+        onChange={e => setTitulo(e.target.value)} 
+        maxLength={200}
+      />
+      <textarea 
+        placeholder="Descrição" 
+        value={descricao} 
+        onChange={e => setDescricao(e.target.value)} 
+        maxLength={200}
+        required
+      />
       <button type="submit" disabled={loading}>{loading ? 'Criando...' : 'Criar Tarefa'}</button>
     </form>
   )

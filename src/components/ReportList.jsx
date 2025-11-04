@@ -19,14 +19,26 @@ export default function ReportsList({ reports = [], loading, onUpdate, onDelete 
   if (loading) return <p>Carregando relatórios...</p>
   if (!reports.length) return <p>Nenhum relatório encontrado.</p>
 
+  // Random order
+  const sortedReports = [...reports].sort(() => Math.random() - 0.5)
+
   return (
-    <div className="notes">
-      {reports.map(r => (
+    <div className="reports">
+      {sortedReports.map(r => (
         <div key={r.id} className="note">
           {editingId === r.id ? (
             <div>
-              <input value={titulo} onChange={e => setTitulo(e.target.value)} />
-              <textarea value={conteudo} onChange={e => setConteudo(e.target.value)} />
+              <input 
+                value={titulo} 
+                onChange={e => setTitulo(e.target.value)}
+                maxLength={500}
+                minLength={10}
+              />
+              <textarea 
+                value={conteudo} 
+                onChange={e => setConteudo(e.target.value)}
+                maxLength={500}
+              />
               <div>
                 <button onClick={save}>Salvar</button>
                 <button onClick={() => setEditingId(null)}>Cancelar</button>

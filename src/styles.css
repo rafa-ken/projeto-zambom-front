@@ -1,15 +1,72 @@
-body { font-family: Arial, sans-serif; margin: 0; padding: 0; background:#fafafa; color:#222 }
+/* Common styles */
+body { margin: 0; padding: 0; background:#fafafa; color:#222 }
 .container { max-width: 900px; margin: 20px auto; padding: 16px; }
 header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px }
 header h1 { margin: 0 }
-.note { border:1px solid #ddd; padding:12px; margin-bottom:10px; border-radius:6px; background:#fff }
-.note h3 { margin: 0 0 6px 0 }
-.note p { margin: 0 0 8px 0 }
 .actions button { margin-right:8px }
-.note-form { display:flex; flex-direction:column; gap:8px; margin-bottom:18px }
-.note-form input, .note-form textarea { padding:8px; font-size:14px; border:1px solid #ccc; border-radius:4px }
-.note-form textarea { min-height:80px; resize:vertical }
 .center { text-align:center; margin-top:40px }
 .me { margin-right:12px; font-size:14px; color:#555 }
 button { padding:8px 12px; border-radius:6px; border:1px solid #bbb; background:#fff; cursor:pointer }
 button:hover { opacity:0.95 }
+
+/* Notes styles - Green theme */
+.notes .note { 
+  font-family: Arial, sans-serif;
+  border: 1px solid #4CAF50;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  background: #f1f8e9;
+  color: #2e7d32;
+}
+.notes input, .notes textarea {
+  maxlength: 1000;
+  font-family: Arial, sans-serif;
+}
+
+/* Tasks styles - Red theme */
+.tasks .task {
+  font-family: "Courier New", monospace;
+  border: 1px solid #f44336;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  background: #ffebee;
+  color: #c62828;
+}
+.tasks input, .tasks textarea {
+  max-length: 200;
+  font-family: "Courier New", monospace;
+}
+
+/* Reports styles - Blue theme */
+.reports .report {
+  font-family: Georgia, serif;
+  border: 1px solid #2196F3;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  background: #e3f2fd;
+  color: #1565c0;
+}
+.reports input, .reports textarea {
+  max-length: 500;
+  font-family: Georgia, serif;
+}
+
+/* Form styles for all types */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.form input, .form textarea {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 4px;
+}
+.form textarea {
+  min-height: 80px;
+  resize: vertical;
+}

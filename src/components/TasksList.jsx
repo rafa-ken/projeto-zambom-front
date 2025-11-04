@@ -21,14 +21,27 @@ export default function TasksList({ tasks = [], loading, onUpdate, onDelete }) {
   if (loading) return <p>Carregando tarefas...</p>
   if (!tasks.length) return <p>Nenhuma tarefa encontrada.</p>
 
+  // Sort alphabetically by title
+  const sortedTasks = [...tasks].sort((a, b) => {
+    return (a.titulo || '').localeCompare(b.titulo || '')
+  })
+
   return (
-    <div className="notes">
-      {tasks.map(t => (
+    <div className="tasks">
+      {sortedTasks.map(t => (
         <div key={t.id} className="note">
           {editingId === t.id ? (
             <div>
-              <input value={titulo} onChange={e => setTitulo(e.target.value)} />
-              <textarea value={descricao} onChange={e => setDescricao(e.target.value)} />
+              <input 
+                value={titulo} 
+                onChange={e => setTitulo(e.target.value)} 
+                maxLength={200}
+              />
+              <textarea 
+                value={descricao} 
+                onChange={e => setDescricao(e.target.value)}
+                maxLength={200}
+              />
               <label>
                 <input type="checkbox" checked={concluida} onChange={e => setConcluida(e.target.checked)} />
                 Concluída
