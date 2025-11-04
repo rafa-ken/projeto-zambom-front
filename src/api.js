@@ -1,7 +1,7 @@
 // src/api.js
 // Robust API helper with service mapping, timeout, and consistent error shapes.
 
-const DEFAULT_TIMEOUT = 15000 // ms
+const DEFAULT_TIMEOUT = Number(import.meta.env.VITE_API_TIMEOUT_MS) || 60000
 
 const BASES = {
   notes: import.meta.env.VITE_API_NOTES_URL ?? import.meta.env.VITE_API_BASE ?? '',
