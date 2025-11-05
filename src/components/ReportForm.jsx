@@ -53,6 +53,10 @@ export default function ReportForm({ onCreate }) {
       setConteudo('')
       setTaskId('')
       alert('💧 Relatório criado com sucesso!')
+    } catch (err) {
+      console.error('Erro completo:', err)
+      const errorMsg = err?.body?.error || err?.body?.message || err.message || 'Erro ao criar relatório'
+      alert(`Erro: ${errorMsg}`)
     } finally { 
       setLoading(false) 
     }
