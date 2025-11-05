@@ -21,7 +21,7 @@ createRoot(document.getElementById('root')).render(
       clientId={clientId}
       authorizationParams={{
         audience: audience,
-        scope: 'openid profile email offline_access',
+        scope: 'openid profile email create:notes update:notes delete:notes create:reports update:reports delete:reports create:tasks update:tasks delete:tasks offline_access',
         redirect_uri: window.location.origin
       }}
       useRefreshTokens={true}
