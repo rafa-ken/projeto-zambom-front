@@ -2,7 +2,7 @@ import React from 'react'
 import { createRoot } from 'react-dom/client'
 import { Auth0Provider } from '@auth0/auth0-react'
 import App from './App'
-import './styles.css'
+import './index.css'
 
 // read envs
 const domain = import.meta.env.VITE_AUTH0_DOMAIN
@@ -21,7 +21,7 @@ createRoot(document.getElementById('root')).render(
       clientId={clientId}
       authorizationParams={{
         audience: audience,
-        scope: 'openid profile email create:notes update:notes delete:notes create:reports update:reports delete:reports create:tasks update:tasks delete:tasks offline_access',
+        scope: 'openid profile email offline_access',
         redirect_uri: window.location.origin
       }}
       useRefreshTokens={true}

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import { serviceFetch } from '../api'
+import Input from './ui/Input'
+import Textarea from './ui/Textarea'
+import Select from './ui/Select'
+import Button from './ui/Button'
 
 export default function NoteForm({ onCreate }) {
   const { getAccessTokenSilently } = useAuth0()
@@ -20,17 +24,14 @@ export default function NoteForm({ onCreate }) {
     try {
       const token = await getAccessTokenSilently()
       const tasksData = await serviceFetch('tasks', '/tarefas', { token })
-      // Normalizar resposta (array direto ou objeto com data)
       const tasksList = Array.isArray(tasksData) ? tasksData : (tasksData?.data || [])
       setTasks(tasksList)
       if (tasksList.length > 0) {
-        // pré-seleciona primeira para maior usabilidade
         const firstId = tasksList[0]._id || tasksList[0].id || ''
         setTaskId(firstId)
       }
     } catch (err) {
       console.error('Erro ao buscar tasks:', err)
-      alert('Erro ao carregar tasks. Tente recarregar a página.')
     } finally {
       setLoadingTasks(false)
     }
@@ -53,12 +54,10 @@ export default function NoteForm({ onCreate }) {
 
     setLoading(true)
     try {
-      // onCreate deve aceitar { title, content, task_id }
       await onCreate({ title: title.trim(), content: content.trim(), task_id: taskId })
       setTitle('')
       setContent('')
-      setTaskId('') // limpa seleção (ou manter pré-selecionada conforme preferência)
-      alert('📝 Nota criada com sucesso!')
+      setTaskId('')
     } catch (err) {
       console.error('Erro ao criar nota:', err)
       const errorMsg = err?.body?.error || err?.body?.message || err.message || 'Erro ao criar nota'
@@ -68,46 +67,48 @@ export default function NoteForm({ onCreate }) {
     }
   }
 
+  const taskOptions = tasks.map(task => {
+    const id = task._id || task.id || task._key || ''
+    const label = task.titulo || task.title || task.descricao || `Task ${id}`
+    return { value: id, label }
+  })
+
   return (
-    <form className="form notes" onSubmit={submit}>
-      <input
-        placeholder="Título"
+    <form onSubmit={submit} className="space-y-4">
+      <Input
+        label="Título"
         value={title}
         onChange={e => setTitle(e.target.value)}
-        maxLength={500}
+        placeholder="Digite o título da nota"
         required
+        maxLength={500}
       />
-      <textarea
-        placeholder="Conteúdo"
+
+      <Textarea
+        label="Conteúdo"
         value={content}
         onChange={e => setContent(e.target.value)}
-        maxLength={2000}
+        placeholder="Digite o conteúdo da nota"
         required
+        rows={6}
+        maxLength={2000}
       />
 
-      <select
+      <Select
+        label="Task Vinculada"
         value={taskId}
         onChange={e => setTaskId(e.target.value)}
+        options={taskOptions}
+        placeholder={loadingTasks ? 'Carregando tasks...' : 'Selecione uma task'}
         required
         disabled={loadingTasks}
-      >
-        <option value="">
-          {loadingTasks ? 'Carregando tasks...' : 'Selecione uma task *'}
-        </option>
-        {tasks.map(task => {
-          const id = task._id || task.id || task._key || ''
-          const label = task.titulo || task.title || task.descricao || `Task ${id}`
-          return (
-            <option key={id} value={id}>
-              {label}
-            </option>
-          )
-        })}
-      </select>
+      />
 
-      <button type="submit" disabled={loading || loadingTasks}>
-        {loading ? 'Criando...' : 'Criar Nota'}
-      </button>
+      <div className="flex gap-2 pt-2">
+        <Button type="submit" disabled={loading || loadingTasks} loading={loading} fullWidth>
+          {loading ? 'Criando...' : 'Criar Nota'}
+        </Button>
+      </div>
     </form>
   )
 }

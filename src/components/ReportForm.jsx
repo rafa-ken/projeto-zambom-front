@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import { serviceFetch } from '../api'
+import Input from './ui/Input'
+import Textarea from './ui/Textarea'
+import Select from './ui/Select'
+import Button from './ui/Button'
 
 export default function ReportForm({ onCreate }) {
   const { getAccessTokenSilently } = useAuth0()
@@ -11,7 +15,6 @@ export default function ReportForm({ onCreate }) {
   const [loading, setLoading] = useState(false)
   const [loadingTasks, setLoadingTasks] = useState(false)
 
-  // Buscar tasks ao montar o componente
   useEffect(() => {
     fetchTasks()
   }, [])
@@ -21,12 +24,10 @@ export default function ReportForm({ onCreate }) {
     try {
       const token = await getAccessTokenSilently()
       const tasksData = await serviceFetch('tasks', '/tarefas', { token })
-      // Normalizar resposta (pode ser array direto ou objeto com data)
       const tasksList = Array.isArray(tasksData) ? tasksData : (tasksData?.data || [])
       setTasks(tasksList)
     } catch (err) {
       console.error('Erro ao buscar tasks:', err)
-      alert('Erro ao carregar tasks. Tente recarregar a página.')
     } finally {
       setLoadingTasks(false)
     }
@@ -52,7 +53,6 @@ export default function ReportForm({ onCreate }) {
       setTitulo('')
       setConteudo('')
       setTaskId('')
-      alert('💧 Relatório criado com sucesso!')
     } catch (err) {
       console.error('Erro completo:', err)
       const errorMsg = err?.body?.error || err?.body?.message || err.message || 'Erro ao criar relatório'
@@ -62,41 +62,49 @@ export default function ReportForm({ onCreate }) {
     }
   }
 
+  const taskOptions = tasks.map(task => ({
+    value: task.id,
+    label: task.titulo || task.descricao || `Task ${task.id}`
+  }))
+
   return (
-    <form className="form reports" onSubmit={submit}>
-      <input 
-        placeholder="Título do relatório (mínimo 10 caracteres)" 
-        value={titulo} 
-        onChange={e => setTitulo(e.target.value)} 
-        maxLength={500}
+    <form onSubmit={submit} className="space-y-4">
+      <Input
+        label="Título"
+        value={titulo}
+        onChange={e => setTitulo(e.target.value)}
+        placeholder="Título do relatório"
         required
         minLength={10}
-      />
-      <textarea 
-        placeholder="Conteúdo" 
-        value={conteudo} 
-        onChange={e => setConteudo(e.target.value)} 
         maxLength={500}
-        required
+        helpText="Mínimo 10 caracteres"
       />
-      <select 
-        value={taskId} 
+
+      <Textarea
+        label="Conteúdo"
+        value={conteudo}
+        onChange={e => setConteudo(e.target.value)}
+        placeholder="Descreva o relatório"
+        required
+        rows={6}
+        maxLength={500}
+      />
+
+      <Select
+        label="Task Vinculada"
+        value={taskId}
         onChange={e => setTaskId(e.target.value)}
+        options={taskOptions}
+        placeholder={loadingTasks ? 'Carregando tasks...' : 'Selecione uma task'}
         required
         disabled={loadingTasks}
-      >
-        <option value="">
-          {loadingTasks ? 'Carregando tasks...' : 'Selecione uma task *'}
-        </option>
-        {tasks.map(task => (
-          <option key={task.id} value={task.id}>
-            {task.titulo || task.descricao || `Task ${task.id}`}
-          </option>
-        ))}
-      </select>
-      <button type="submit" disabled={loading || loadingTasks}>
-        {loading ? 'Criando...' : 'Criar Relatório'}
-      </button>
+      />
+
+      <div className="flex gap-2 pt-2">
+        <Button type="submit" disabled={loading || loadingTasks} loading={loading} fullWidth>
+          {loading ? 'Criando...' : 'Criar Relatório'}
+        </Button>
+      </div>
     </form>
   )
 }

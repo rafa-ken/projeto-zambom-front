@@ -1,4 +1,7 @@
 import React, { useState } from 'react'
+import Input from './ui/Input'
+import Textarea from './ui/Textarea'
+import Button from './ui/Button'
 
 export default function TaskForm({ onCreate }) {
   const [titulo, setTitulo] = useState('')
@@ -16,28 +19,37 @@ export default function TaskForm({ onCreate }) {
       await onCreate({ titulo, descricao })
       setTitulo('')
       setDescricao('')
-      alert('🔥 Anotado!')
     } finally { 
       setLoading(false) 
     }
   }
 
   return (
-    <form className="form tasks" onSubmit={submit}>
-      <input 
-        placeholder="Título da tarefa (opcional)" 
-        value={titulo} 
-        onChange={e => setTitulo(e.target.value)} 
+    <form onSubmit={submit} className="space-y-4">
+      <Input
+        label="Título"
+        value={titulo}
+        onChange={e => setTitulo(e.target.value)}
+        placeholder="Título da tarefa (opcional)"
         maxLength={200}
+        helpText="Opcional - deixe em branco se preferir"
       />
-      <textarea 
-        placeholder="Descrição" 
-        value={descricao} 
-        onChange={e => setDescricao(e.target.value)} 
-        maxLength={200}
+
+      <Textarea
+        label="Descrição"
+        value={descricao}
+        onChange={e => setDescricao(e.target.value)}
+        placeholder="Descreva a tarefa"
         required
+        rows={4}
+        maxLength={200}
       />
-      <button type="submit" disabled={loading}>{loading ? 'Criando...' : 'Criar Tarefa'}</button>
+
+      <div className="flex gap-2 pt-2">
+        <Button type="submit" disabled={loading} loading={loading} fullWidth>
+          {loading ? 'Criando...' : 'Criar Tarefa'}
+        </Button>
+      </div>
     </form>
   )
 }
